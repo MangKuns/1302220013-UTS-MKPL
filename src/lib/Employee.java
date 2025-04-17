@@ -31,20 +31,83 @@ public class Employee {
 	private List<String> childNames;
 	private List<String> childIdNumbers;
 	
-	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, int yearJoined, int monthJoined, int dayJoined, boolean isForeigner, boolean gender) {
-		this.employeeId = employeeId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.idNumber = idNumber;
-		this.address = address;
-		this.yearJoined = yearJoined;
-		this.monthJoined = monthJoined;
-		this.dayJoined = dayJoined;
-		this.isForeigner = isForeigner;
-		this.gender = gender;
-		
-		childNames = new LinkedList<String>();
-		childIdNumbers = new LinkedList<String>();
+	private Employee() {
+		childNames = new LinkedList<>();
+		childIdNumbers = new LinkedList<>();
+	}
+	
+	/**
+	 * Builder class untuk membangun objek Employee dengan parameter yang ringkas namun mengorbankan baris yang menjadi lebih panjang
+	 */
+
+	public static class EmployeeBuilder {
+		private String employeeId;
+		private String firstName;
+		private String lastName;
+		private String idNumber;
+		private String address;
+		private int yearJoined;
+		private int monthJoined;
+		private int dayJoined;
+		private boolean isForeigner;
+		private boolean gender;
+
+		public EmployeeBuilder setEmployeeId(String employeeId) {
+			this.employeeId = employeeId;
+			return this;
+		}
+
+		public EmployeeBuilder setFirstName(String firstName) {
+			this.firstName = firstName;
+			return this;
+		}
+
+		public EmployeeBuilder setLastName(String lastName) {
+			this.lastName = lastName;
+			return this;
+		}
+
+		public EmployeeBuilder setIdNumber(String idNumber) {
+			this.idNumber = idNumber;
+			return this;
+		}
+
+		public EmployeeBuilder setAddress(String address) {
+			this.address = address;
+			return this;
+		}
+
+		public EmployeeBuilder setJoinedDate(int year, int month, int day) {
+			this.yearJoined = year;
+			this.monthJoined = month;
+			this.dayJoined = day;
+			return this;
+		}
+
+		public EmployeeBuilder setIsForeigner(boolean isForeigner) {
+			this.isForeigner = isForeigner;
+			return this;
+		}
+
+		public EmployeeBuilder setGender(boolean gender) {
+			this.gender = gender;
+			return this;
+		}
+
+		public Employee build() {
+			Employee emp = new Employee();
+			emp.employeeId = this.employeeId;
+			emp.firstName = this.firstName;
+			emp.lastName = this.lastName;
+			emp.idNumber = this.idNumber;
+			emp.address = this.address;
+			emp.yearJoined = this.yearJoined;
+			emp.monthJoined = this.monthJoined;
+			emp.dayJoined = this.dayJoined;
+			emp.isForeigner = this.isForeigner;
+			emp.gender = this.gender;
+			return emp;
+		}
 	}
 	
 	/**
