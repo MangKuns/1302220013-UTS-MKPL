@@ -2,7 +2,6 @@ package lib;
 
 public class TaxFunction {
 
-	
 	/**
 	 * Fungsi untuk menghitung jumlah pajak penghasilan pegawai yang harus dibayarkan setahun.
 	 * 
@@ -13,25 +12,30 @@ public class TaxFunction {
 	 * Jika pegawai sudah memiliki anak maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000 per anak sampai anak ketiga.
 	 * 
 	 */
-	
-	
-	 public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
-		
-		if (numberOfMonthWorking > 12) {
-			System.err.println("More than 12 month working per year");
-		}
-		
-		if (numberOfChildren > 3) {
-			numberOfChildren = 3;
-		}
-		
+
+	private static final int BASE_NON_TAXABLE = 54000000;
+	private static final int MARRIED_ALLOWANCE = 4500000;
+	private static final int CHILD_ALLOWANCE = 1500000;
+	private static final int MAX_CHILDREN = 3;
+	private static final double TAX_RATE = 0.05;
+
+	public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
+
+		validateInput(numberOfMonthWorking);
+
+		numberOfChildren = Math.min(numberOfChildren, MAX_CHILDREN);
+
 		int annualIncome = calculateAnnualIncome(monthlySalary, otherMonthlyIncome, numberOfMonthWorking);
 		int nonTaxableIncome = calculateNonTaxableIncome(isMarried, numberOfChildren);
 		int taxableIncome = annualIncome - deductible - nonTaxableIncome;
 
-		int tax = (int) Math.round(0.05 * taxableIncome);
+		return calculateTaxFromIncome(taxableIncome);
+	}
 
-		return tax < 0 ? 0 : tax;
+	private static void validateInput(int numberOfMonthWorking) {
+		if (numberOfMonthWorking > 12) {
+			throw new IllegalArgumentException("Jumlah bulan bekerja tidak boleh lebih dari 12");
+		}
 	}
 
 	private static int calculateAnnualIncome(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking) {
@@ -39,12 +43,16 @@ public class TaxFunction {
 	}
 
 	private static int calculateNonTaxableIncome(boolean isMarried, int numberOfChildren) {
-		int base = 54000000;
+		int total = BASE_NON_TAXABLE;
 		if (isMarried) {
-			base += 4500000;
+			total += MARRIED_ALLOWANCE;
 		}
-		base += numberOfChildren * 1500000;
-		return base;
+		total += numberOfChildren * CHILD_ALLOWANCE;
+		return total;
 	}
-	
+
+	private static int calculateTaxFromIncome(int taxableIncome) {
+		if (taxableIncome <= 0) return 0;
+		return (int) Math.round(TAX_RATE * taxableIncome);
+	}
 }
